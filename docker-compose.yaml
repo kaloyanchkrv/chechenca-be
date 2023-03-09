@@ -1,0 +1,22 @@
+version: "3.8"
+services:
+  db:
+    build:
+      dockerfile: Dockerfile
+      context: .
+    depends_on:
+      - postgres
+    environment:
+      - DATABASE_URL=postgres://user:password@postgres:3306/postgres
+      - PORT=3000
+    ports:
+      - "8080:3000"
+
+  postgres:
+    image: postgres:latest
+    ports:
+      - "3306:5432"
+    environment:
+      - POSTGRES_USER=user
+      - POSTGRES_PASSWORD=12345
+      - POSTGRES_DB=checheneca

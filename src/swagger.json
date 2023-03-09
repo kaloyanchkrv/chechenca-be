@@ -1,0 +1,19 @@
+{
+  "openapi": "3.0.1",
+  "info": {
+    "version": "1.0.0",
+    "title": "Bodyguard API",
+    "description": "Bodyguard API"
+  },
+  "servers": [
+    {
+      "url": "https://0233-194-141-252-114.eu.ngrok.io",
+      "description": "Bodyguard"
+    }
+  ],
+  "security": [
+    {
+      "Authorization": []
+    }
+  ]
+}
