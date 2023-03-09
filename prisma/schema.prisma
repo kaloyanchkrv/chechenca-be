@@ -40,4 +40,5 @@ model Request {
   user            User     @relation(fields: [userId], references: [id])
   description     String   @db.VarChar(256)
   startingAddress String   @map("starting_address") @db.VarChar(256)
+  endingAddress   String?  @map("ending_address") @db.VarChar(256)
 }

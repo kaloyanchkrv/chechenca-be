@@ -4,6 +4,7 @@ export interface CreateRequestArgs {
   status: string;
   description: string;
   startingAddress: string;
+  endingAddress: string | null;
 }
 
 export interface RequestResponse {
@@ -13,4 +14,5 @@ export interface RequestResponse {
   status: string;
   description: string;
   startingAddress: string;
+  endingAddress: string | null;
 }

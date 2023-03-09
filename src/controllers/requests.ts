@@ -8,15 +8,21 @@ const createRequest = async (
   req: Request<
     unknown,
     unknown,
-    { userId: number; description: string; skills: string[]; startingAddress: string; status: string }
+    {
+      userId: number;
+      description: string;
+      skills: string[];
+      startingAddress: string;
+      status: string;
+      endingAddress: string | null;
+    }
   >,
   res: Response<RequestResponse | CustomError>
 ) => {
   try {
-    const { userId, description, skills, startingAddress, status } = req.body;
+    const { userId, description, skills, startingAddress, status, endingAddress } = req.body;
 
     if (
-      !userId ||
       !description ||
       !skills ||
       !startingAddress ||
@@ -39,6 +45,7 @@ const createRequest = async (
       skills,
       startingAddress,
       status,
+      endingAddress,
     });
 
     return res.status(HTTPStatusCode.CREATED).json(request);
@@ -48,6 +55,33 @@ const createRequest = async (
   }
 };
 
+const getRequestById = async (req: Request<{ id: number }>, res: Response<RequestResponse | CustomError>) => {
+  try {
+    const { id } = req.params;
+    const request = await requestService.getRequestById(Number(id));
+    return res.status(HTTPStatusCode.OK).json(request);
+  } catch (e) {
+    const error = formatError(e);
+    throw error;
+  }
+};
+
+const getRequestsByUserId = async (
+  req: Request<{ userId: number }>,
+  res: Response<RequestResponse[] | CustomError>
+) => {
+  try {
+    const { userId } = req.params;
+    const request = await requestService.getRequestsByUserId(Number(userId));
+    return res.status(HTTPStatusCode.OK).json(request);
+  } catch (e) {
+    const error = formatError(e);
+    throw error;
+  }
+};
+
 export const requestController = {
   createRequest,
+  getRequestById,
+  getRequestsByUserId,
 };

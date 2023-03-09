@@ -15,5 +15,15 @@
     {
       "Authorization": []
     }
+  ],
+  "tags": [
+    {
+      "name": "Users",
+      "description": "Users endpoints"
+    },
+    {
+      "name": "Requests",
+      "description": "Offers endpoints"
+    }
   ]
 }
