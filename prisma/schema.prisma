@@ -11,12 +11,13 @@ datasource db {
 }
 
 model User {
-  id          Int      @id @default(autoincrement())
-  createdAt   DateTime @default(now()) @map("created_at")
-  updatedAt   DateTime @updatedAt @map("updated_at")
-  email       String   @unique @db.VarChar(256)
-  name        String   @db.VarChar(256)
-  phoneNumber String   @unique @map("phone_number") @db.VarChar(256)
+  id          Int       @id @default(autoincrement())
+  createdAt   DateTime  @default(now()) @map("created_at")
+  updatedAt   DateTime  @updatedAt @map("updated_at")
+  email       String    @unique @db.VarChar(256)
+  name        String    @db.VarChar(256)
+  phoneNumber String    @unique @map("phone_number") @db.VarChar(256)
+  requests    Request[]
 }
 
 model Guard {
@@ -27,4 +28,16 @@ model Guard {
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
   skills      String[] @db.VarChar(256)
+}
+
+model Request {
+  id              Int      @id @default(autoincrement())
+  createdAt       DateTime @default(now()) @map("created_at")
+  skills          String[] @db.VarChar(256)
+  updatedAt       DateTime @updatedAt @map("updated_at")
+  status          String   @db.VarChar(256)
+  userId          Int      @map("user_id")
+  user            User     @relation(fields: [userId], references: [id])
+  description     String   @db.VarChar(256)
+  startingAddress String   @map("starting_address") @db.VarChar(256)
 }
