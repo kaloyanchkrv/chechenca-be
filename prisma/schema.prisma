@@ -21,24 +21,23 @@ model User {
 }
 
 model Guard {
-  id          Int       @id @default(autoincrement())
-  name        String    @db.VarChar(256)
-  email       String    @unique @db.VarChar(256)
-  phoneNumber String    @unique @map("phone_number") @db.VarChar(256)
-  createdAt   DateTime  @default(now())
-  updatedAt   DateTime  @updatedAt
-  isGuard     Boolean   @default(false) @map("is_guard")
-  isDriver    Boolean   @default(false) @map("is_driver")
-  hasGun      Boolean   @default(false) @map("has_gun")
-  requests    Request[]
+  id          Int      @id @default(autoincrement())
+  name        String   @db.VarChar(256)
+  email       String   @unique @db.VarChar(256)
+  phoneNumber String   @unique @map("phone_number") @db.VarChar(256)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  hasVehicle  Boolean  @default(false) @map("has_car")
+  isGuard     Boolean  @default(false) @map("is_guard")
+  isDriver    Boolean  @default(false) @map("is_driver")
+  hasGun      Boolean  @default(false) @map("has_gun")
+
+  requests Request[]
 }
 
 model Request {
   id              Int      @id @default(autoincrement())
   createdAt       DateTime @default(now()) @map("created_at")
-  isGuard         Boolean  @default(false) @map("is_guard")
-  isDriver        Boolean  @default(false) @map("is_driver")
-  hasGun          Boolean  @default(false) @map("has_gun")
   isTaken         Boolean  @default(false) @map("is_taken")
   updatedAt       DateTime @updatedAt @map("updated_at")
   isActive        Boolean  @default(false)
@@ -49,4 +48,10 @@ model Request {
   description     String   @db.VarChar(256)
   startingAddress String   @map("starting_address") @db.VarChar(256)
   endingAddress   String?  @map("ending_address") @db.VarChar(256)
+  startingTime    String   @default("") @map("starting_time")
+  endingTime      String?  @default("") @map("ending_time")
+  isGuard         Boolean  @default(false) @map("is_guard")
+  isDriver        Boolean  @default(false) @map("is_driver")
+  hasGun          Boolean  @default(false) @map("has_gun")
+  hasVehicle      Boolean  @default(false) @map("has_car")
 }

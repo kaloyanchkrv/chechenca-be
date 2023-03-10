@@ -34,12 +34,20 @@ const createGuard = async (
   req: Request<
     unknown,
     unknown,
-    { name: string; email: string; phone: string; hasGun: boolean; isGuard: boolean; isDriver: boolean }
+    {
+      name: string;
+      email: string;
+      phone: string;
+      hasGun: boolean;
+      isGuard: boolean;
+      isDriver: boolean;
+      hasVehicle: boolean;
+    }
   >,
   res: Response<UserResponse | CustomError>
 ) => {
   try {
-    const { name, email, phone, hasGun, isDriver, isGuard } = req.body;
+    const { name, email, phone, hasGun, isDriver, isGuard, hasVehicle } = req.body;
 
     if (!name || !email || !phone || !name.trim().length || !email.trim().length || !phone.trim().length) {
       throw new CustomError({
@@ -49,7 +57,7 @@ const createGuard = async (
       });
     }
 
-    const user = await userService.createGuard({ name, email, phone, hasGun, isGuard, isDriver });
+    const user = await userService.createGuard({ name, email, phone, hasGun, isGuard, isDriver, hasVehicle });
 
     return res.status(HTTPStatusCode.CREATED).json(user);
   } catch (e) {
@@ -101,25 +109,68 @@ const getGuard = async (req: Request<{ id: string }>, res: Response<UserResponse
 };
 
 const getGuardBySkills = async (
-  req: Request<unknown, unknown, unknown, { isDriver: boolean; isGuard: boolean; hasGun: boolean }>,
+  req: Request<unknown, unknown, unknown, { hasGun: string; hasVehicle: string; isDriver: string; isGuard: string }>,
   res: Response<UserResponse[] | CustomError>
 ) => {
   try {
-    const isDriver = req.query.isDriver;
-    const isGuard = req.query.isGuard;
-    const hasGun = req.query.hasGun;
+    const { hasGun, hasVehicle, isDriver, isGuard } = req.query;
+    const string = "true";
+    const hasGunBool = hasGun === string;
+    const hasVehicleBool = hasVehicle === string;
+    const isDriverBool = isDriver === string;
+    const isGuardBool = isGuard === string;
 
-    const user = await userService.getGuardBySkills(isDriver);
+    const user = await userService.getGuardBySkills(hasGunBool, hasVehicleBool, isDriverBool, isGuardBool);
 
     if (!user) {
       throw new CustomError({
         message: "User not found",
         statusCode: HTTPStatusCode.NOT_FOUND,
-        internalMessage: InternalErrorMessages.USER_NOT_FOUND,
+        internalMessage: InternalErrorMessages.USERS_NOT_FOUND,
       });
     }
 
     return res.status(HTTPStatusCode.OK).json(user);
+  } catch (e) {
+    const error = formatError(e);
+
+    throw error;
+  }
+};
+
+const getAllUsers = async (req: Request, res: Response<UserResponse[] | CustomError>) => {
+  try {
+    const users = await userService.getAllUsers();
+
+    if (!users) {
+      throw new CustomError({
+        message: "Users not found",
+        statusCode: HTTPStatusCode.NOT_FOUND,
+        internalMessage: InternalErrorMessages.USERS_NOT_FOUND,
+      });
+    }
+
+    return res.status(HTTPStatusCode.OK).json(users);
+  } catch (e) {
+    const error = formatError(e);
+
+    throw error;
+  }
+};
+
+const getAllGuards = async (req: Request, res: Response<UserResponse[] | CustomError>) => {
+  try {
+    const users = await userService.getAllGuards();
+
+    if (!users) {
+      throw new CustomError({
+        message: "Users not found",
+        statusCode: HTTPStatusCode.NOT_FOUND,
+        internalMessage: InternalErrorMessages.USERS_NOT_FOUND,
+      });
+    }
+
+    return res.status(HTTPStatusCode.OK).json(users);
   } catch (e) {
     const error = formatError(e);
 
@@ -133,4 +184,6 @@ export const userController = {
   getUser,
   getGuard,
   getGuardBySkills,
+  getAllUsers,
+  getAllGuards,
 };

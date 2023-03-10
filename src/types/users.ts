@@ -10,15 +10,17 @@ export interface CreateGuardParams {
   name: string;
   email: string;
   phone: string;
+  hasGun: boolean;
   isDriver: boolean;
   isGuard: boolean;
-  hasGun: boolean;
+  hasVehicle: boolean;
 }
 
 export interface GetGuardSkillsParams {
   isGuard: boolean;
   isDriver: boolean;
   hasGun: boolean;
+  hasVehicle: boolean;
 }
 
 export type UserResponse = Pick<User, "email" | "name">;
