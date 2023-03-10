@@ -2,18 +2,13 @@
   "openapi": "3.0.1",
   "info": {
     "version": "1.0.0",
-    "title": "Bodyguard API",
-    "description": "Bodyguard API"
+    "title": "BodyGuard API",
+    "description": "BodyGuard API"
   },
   "servers": [
     {
-      "url": "https://0233-194-141-252-114.eu.ngrok.io",
-      "description": "Bodyguard"
-    }
-  ],
-  "security": [
-    {
-      "Authorization": []
+      "url": " https://bbb5-194-141-252-114.eu.ngrok.io",
+      "description": "BodyGuard API"
     }
   ],
   "tags": [
@@ -23,7 +18,407 @@
     },
     {
       "name": "Requests",
-      "description": "Offers endpoints"
+      "description": "Requests endpoints"
     }
-  ]
+  ],
+  "paths": {
+    "/users": {
+      "post": {
+        "tags": ["Users"],
+        "summary": "Create user",
+        "description": "Create user",
+        "operationId": "createUser",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateUserParams"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "User",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/User"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "404": {
+            "$ref": "#/components/responses/404"
+          }
+        }
+      }
+    },
+    "/users/guard": {
+      "post": {
+        "tags": ["Users"],
+        "summary": "Create user as guard",
+        "description": "Create user as guard",
+        "operationId": "create guard",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Guard"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Guard Created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Guard"
+                }
+              }
+            }
+          },
+          "404": {
+            "$ref": "#/components/responses/404"
+          }
+        }
+      }
+    },
+    "/users/{id}": {
+      "get": {
+        "tags": ["Users"],
+        "summary": "Get user",
+        "description": "Get user",
+        "operationId": "updateUserName",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "User id",
+            "required": true,
+            "schema": {
+              "type": "number",
+              "format": "number"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "User",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/User"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "404": {
+            "$ref": "#/components/responses/404"
+          }
+        }
+      }
+    },
+    "/users/guard/{id}": {
+      "get": {
+        "tags": ["Users"],
+        "summary": "Get guard by id",
+        "description": "Get guard by id",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "User id",
+            "required": true,
+            "schema": {
+              "type": "number",
+              "format": "number"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "User",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Guard"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "404": {
+            "$ref": "#/components/responses/404"
+          }
+        }
+      }
+    },
+    "/requests": {
+      "post": {
+        "tags": ["Requests"],
+        "summary": "Create request",
+        "description": "Create request",
+        "operationId": "createRequest",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Request"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Request"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "404": {
+            "$ref": "#/components/responses/404"
+          }
+        }
+      }
+    },
+    "/requests/{id}": {
+      "get": {
+        "tags": ["Requests"],
+        "summary": "Get request",
+        "description": "Get request",
+        "operationId": "getRequest",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "Request id",
+            "required": true,
+            "schema": {
+              "type": "number",
+              "format": "number"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Request"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "404": {
+            "$ref": "#/components/responses/404"
+          }
+        }
+      }
+    },
+    "/requests/users/{userId}": {
+      "get": {
+        "tags": ["Requests"],
+        "summary": "Get requests by user id",
+        "description": "Get requests by user id",
+        "operationId": "getRequestsByUserId",
+        "parameters": [
+          {
+            "name": "userId",
+            "in": "path",
+            "description": "User id",
+            "required": true,
+            "schema": {
+              "type": "number",
+              "format": "number"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Requests",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Request"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "404": {
+            "$ref": "#/components/responses/404"
+          }
+        }
+      }
+    },
+    "/requests/": {
+      "get": {
+        "tags": ["Requests"],
+        "summary": "Get all requests",
+        "description": "Get all requests",
+        "operationId": "getAllRequests",
+        "responses": {
+          "200": {
+            "description": "Requests",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Request"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "404": {
+            "$ref": "#/components/responses/404"
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "responses": {
+      "400": {
+        "description": "Bad Request"
+      },
+      "401": {
+        "description": "Unauthorized"
+      },
+      "403": {
+        "description": "Forbidden"
+      },
+      "404": {
+        "description": "Not Found"
+      },
+      "500": {
+        "description": "Internal Server Error"
+      }
+    },
+    "schemas": {
+      "User": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "example": "Jane Does"
+          },
+          "email": {
+            "type": "string",
+            "example": "H@gmail.com"
+          },
+          "phone": {
+            "type": "string",
+            "example": "1234567890"
+          }
+        }
+      },
+      "Guard": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "example": "Jane Does"
+          },
+          "email": {
+            "type": "string",
+            "example": "h@gmail.com"
+          },
+          "phone": {
+            "type": "string",
+            "example": "1234567890"
+          },
+          "isGuard": {
+            "type": "boolean",
+            "example": false
+          },
+          "isDriver": {
+            "type": "boolean",
+            "example": false
+          },
+          "hasGun": {
+            "type": "boolean",
+            "example": false
+          }
+        }
+      },
+      "CreateUserParams": {
+        "type": "object",
+        "required": ["name"],
+        "properties": {
+          "name": {
+            "type": "string",
+            "example": "Jane Doe"
+          },
+          "email": {
+            "type": "string",
+            "example": "h@gmail.com"
+          },
+          "phone": {
+            "type": "string",
+            "example": "1234567890"
+          }
+        }
+      },
+      "Request": {
+        "type": "object",
+        "required": ["name"],
+        "properties": {
+          "description": {
+            "type": "string",
+            "example": "Jane Doe"
+          },
+          "startingAddress": {
+            "type": "string",
+            "example": ""
+          },
+          "endingAddress": {
+            "type": "string",
+            "example": "1234567890"
+          },
+          "isGuard": {
+            "type": "boolean",
+            "example": false
+          },
+          "isDriver": {
+            "type": "boolean",
+            "example": false
+          },
+          "hasGun": {
+            "type": "boolean",
+            "example": false
+          },
+          "isActive": {
+            "type": "boolean",
+            "example": false
+          }
+        }
+      }
+    }
+  }
 }

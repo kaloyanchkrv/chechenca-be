@@ -11,24 +11,26 @@ const createRequest = async (
     {
       userId: number;
       description: string;
-      skills: string[];
+      isGuard: boolean;
+      isDriver: boolean;
+      hasGun: boolean;
+      isTaken: boolean;
       startingAddress: string;
-      status: string;
+      isActive: boolean;
       endingAddress: string | null;
     }
   >,
   res: Response<RequestResponse | CustomError>
 ) => {
   try {
-    const { userId, description, skills, startingAddress, status, endingAddress } = req.body;
+    const { userId, description, startingAddress, isActive, endingAddress, isDriver, isGuard, hasGun, isTaken } =
+      req.body;
 
     if (
       !description ||
-      !skills ||
       !startingAddress ||
       !status ||
       !description.trim().length ||
-      !skills.length ||
       !startingAddress.trim().length ||
       !status.trim().length
     ) {
@@ -42,10 +44,13 @@ const createRequest = async (
     const request = await requestService.createRequest({
       userId,
       description,
-      skills,
       startingAddress,
-      status,
+      isActive,
       endingAddress,
+      isDriver,
+      isGuard,
+      hasGun,
+      isTaken,
     });
 
     return res.status(HTTPStatusCode.CREATED).json(request);
@@ -80,8 +85,19 @@ const getRequestsByUserId = async (
   }
 };
 
+const getAllRequests = async (req: Request, res: Response<unknown | CustomError>) => {
+  try {
+    const request = await requestService.getAllRequests();
+    return res.status(HTTPStatusCode.OK).json(request);
+  } catch (e) {
+    const error = formatError(e);
+    throw error;
+  }
+};
+
 export const requestController = {
   createRequest,
   getRequestById,
   getRequestsByUserId,
+  getAllRequests,
 };

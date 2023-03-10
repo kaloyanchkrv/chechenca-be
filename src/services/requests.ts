@@ -6,9 +6,12 @@ import { formatError } from "../utils/functions";
 const createRequest = async ({
   userId,
   description,
-  skills,
+  isDriver,
+  isGuard,
+  hasGun,
+  isTaken,
   startingAddress,
-  status,
+  isActive,
   endingAddress,
 }: CreateRequestArgs): Promise<RequestResponse> => {
   try {
@@ -33,10 +36,13 @@ const createRequest = async ({
       data: {
         userId: user.id,
         description: description,
-        skills: skills,
+        isDriver: isDriver,
+        hasGun: hasGun,
+        isGuard: isGuard,
+        isTaken: isTaken,
         startingAddress: startingAddress,
         endingAddress: endingAddress,
-        status: status,
+        isActive: isActive,
       },
     });
 
@@ -65,10 +71,13 @@ const getRequestById = async (id: number): Promise<RequestResponse> => {
         id: true,
         userId: true,
         description: true,
-        skills: true,
+        isDriver: true,
+        hasGun: true,
+        isGuard: true,
+        isTaken: true,
         startingAddress: true,
         endingAddress: true,
-        status: true,
+        isActive: true,
       },
     });
 
@@ -95,6 +104,10 @@ const getRequestsByUserId = async (userId: number): Promise<RequestResponse[]> =
       },
       select: {
         id: true,
+        email: true,
+        name: true,
+        phoneNumber: true,
+        requests: true,
       },
     });
 
@@ -112,12 +125,49 @@ const getRequestsByUserId = async (userId: number): Promise<RequestResponse[]> =
       },
       select: {
         id: true,
-        userId: true,
         description: true,
-        skills: true,
+        isDriver: true,
+        hasGun: true,
+        isGuard: true,
+        user: true,
+        guard: true,
+        isTaken: true,
         startingAddress: true,
         endingAddress: true,
-        status: true,
+        isActive: true,
+      },
+    });
+
+    if (!requests) {
+      throw new CustomError({
+        message: "Requests not found",
+        statusCode: HTTPStatusCode.NOT_FOUND,
+        internalMessage: InternalErrorMessages.REQUEST_NOT_FOUND,
+      });
+    }
+
+    return requests;
+  } catch (e) {
+    const error = formatError(e);
+    throw error;
+  }
+};
+
+const getAllRequests = async (): Promise<RequestResponse[]> => {
+  try {
+    const requests = await prisma.request.findMany({
+      select: {
+        id: true,
+        description: true,
+        isDriver: true,
+        hasGun: true,
+        isGuard: true,
+        isTaken: true,
+        user: true,
+        guard: true,
+        startingAddress: true,
+        endingAddress: true,
+        isActive: true,
       },
     });
 
@@ -140,4 +190,5 @@ export const requestService = {
   createRequest,
   getRequestById,
   getRequestsByUserId,
+  getAllRequests,
 };
