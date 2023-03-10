@@ -18,22 +18,30 @@ const createRequest = async (
       startingAddress: string;
       isActive: boolean;
       endingAddress: string | null;
+      startingTime: string;
+      endingTime: string;
+      hasVehicle: boolean;
     }
   >,
   res: Response<RequestResponse | CustomError>
 ) => {
   try {
-    const { userId, description, startingAddress, isActive, endingAddress, isDriver, isGuard, hasGun, isTaken } =
-      req.body;
+    const {
+      userId,
+      description,
+      startingAddress,
+      isActive,
+      endingAddress,
+      isDriver,
+      isGuard,
+      hasGun,
+      isTaken,
+      startingTime,
+      endingTime,
+      hasVehicle,
+    } = req.body;
 
-    if (
-      !description ||
-      !startingAddress ||
-      !status ||
-      !description.trim().length ||
-      !startingAddress.trim().length ||
-      !status.trim().length
-    ) {
+    if (!description || !startingAddress || !description.trim().length || !startingAddress.trim().length) {
       throw new CustomError({
         message: "Missing required fields",
         statusCode: HTTPStatusCode.BAD_REQUEST,
@@ -51,6 +59,9 @@ const createRequest = async (
       isGuard,
       hasGun,
       isTaken,
+      startingTime,
+      endingTime,
+      hasVehicle,
     });
 
     return res.status(HTTPStatusCode.CREATED).json(request);
@@ -95,9 +106,49 @@ const getAllRequests = async (req: Request, res: Response<unknown | CustomError>
   }
 };
 
+const updateRequestToTaken = async (
+  req: Request<{ id: number; guardId: number }>,
+  res: Response<RequestResponse | CustomError>
+) => {
+  try {
+    const { id, guardId } = req.params;
+
+    const request = await requestService.updateRequestToTaken(Number(id), Number(guardId));
+    return res.status(HTTPStatusCode.OK).json(request);
+  } catch (e) {
+    const error = formatError(e);
+    throw error;
+  }
+};
+
+const getActiveRequests = async (req: Request, res: Response<unknown | CustomError>) => {
+  try {
+    const request = await requestService.getActiveRequests();
+    return res.status(HTTPStatusCode.OK).json(request);
+  } catch (e) {
+    const error = formatError(e);
+    throw error;
+  }
+};
+
+const updateRequestToActive = async (req: Request<{ id: number }>, res: Response<RequestResponse | CustomError>) => {
+  try {
+    const { id } = req.params;
+
+    const request = await requestService.updateRequestToActive(Number(id));
+    return res.status(HTTPStatusCode.OK).json(request);
+  } catch (e) {
+    const error = formatError(e);
+    throw error;
+  }
+};
+
 export const requestController = {
   createRequest,
   getRequestById,
   getRequestsByUserId,
   getAllRequests,
+  updateRequestToTaken,
+  updateRequestToActive,
+  getActiveRequests,
 };

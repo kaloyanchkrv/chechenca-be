@@ -8,6 +8,9 @@ export interface CreateRequestArgs {
   isDriver: boolean;
   hasGun: boolean;
   isTaken: boolean;
+  startingTime: string;
+  endingTime: string;
+  hasVehicle: boolean;
 }
 
 export interface RequestResponse {
@@ -16,8 +19,12 @@ export interface RequestResponse {
   description: string;
   startingAddress: string;
   endingAddress: string | null;
-  isGuard: boolean;
-  isDriver: boolean;
-  hasGun: boolean;
+  isTaken: boolean;
+}
+
+export interface UpdateRequest {
+  id: number;
+  guardId: number;
+  isActive: boolean;
   isTaken: boolean;
 }

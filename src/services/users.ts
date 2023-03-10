@@ -32,9 +32,10 @@ const createGuard = async ({
   name,
   email,
   phone,
-  isGuard,
-  isDriver,
   hasGun,
+  isDriver,
+  isGuard,
+  hasVehicle,
 }: CreateGuardParams): Promise<UserResponse> => {
   try {
     const guard = await prisma.guard.create({
@@ -42,9 +43,10 @@ const createGuard = async ({
         name,
         email,
         phoneNumber: phone,
-        isDriver: isDriver,
-        isGuard: isGuard,
-        hasGun: hasGun,
+        hasGun,
+        isDriver,
+        isGuard,
+        hasVehicle,
       },
     });
 
@@ -74,6 +76,7 @@ const getUser = async (id: number): Promise<UserResponse> => {
         name: true,
         email: true,
         phoneNumber: true,
+        requests: true,
       },
     });
 
@@ -103,9 +106,10 @@ const getGuard = async (id: number): Promise<UserResponse> => {
         name: true,
         email: true,
         phoneNumber: true,
+        hasGun: true,
         isDriver: true,
         isGuard: true,
-        hasGun: true,
+        hasVehicle: true,
       },
     });
 
@@ -124,24 +128,31 @@ const getGuard = async (id: number): Promise<UserResponse> => {
   }
 };
 
-const getGuardBySkills = async (isDriver: boolean): Promise<GuardResponse[]> => {
+const getGuardBySkills = async (
+  hasGun: boolean,
+  hasVehicle: boolean,
+  isDriver: boolean,
+  isGuard: boolean
+): Promise<GuardResponse[]> => {
   try {
-    console.log("hui");
     const guard = await prisma.guard.findMany({
       where: {
-        isDriver: isDriver,
+        hasGun,
+        hasVehicle,
+        isDriver,
+        isGuard,
       },
       select: {
         id: true,
         name: true,
         email: true,
         phoneNumber: true,
+        hasGun: true,
         isDriver: true,
         isGuard: true,
-        hasGun: true,
+        hasVehicle: true,
       },
     });
-    console.log("hui");
 
     if (!guard) {
       throw new CustomError({
@@ -161,10 +172,69 @@ const getGuardBySkills = async (isDriver: boolean): Promise<GuardResponse[]> => 
   }
 };
 
+const getAllUsers = async (): Promise<UserResponse[]> => {
+  try {
+    const users = await prisma.user.findMany({
+      select: {
+        id: true,
+        name: true,
+        email: true,
+        phoneNumber: true,
+        requests: true,
+      },
+    });
+
+    if (!users) {
+      throw new CustomError({
+        message: "Users not found",
+        statusCode: HTTPStatusCode.NOT_FOUND,
+        internalMessage: InternalErrorMessages.USER_NOT_FOUND,
+      });
+    }
+
+    return users;
+  } catch (e) {
+    const error = formatError(e);
+    throw error;
+  }
+};
+
+const getAllGuards = async (): Promise<UserResponse[]> => {
+  try {
+    const guards = await prisma.guard.findMany({
+      select: {
+        id: true,
+        name: true,
+        email: true,
+        phoneNumber: true,
+        requests: true,
+      },
+      orderBy: {
+        createdAt: "desc",
+      },
+    });
+
+    if (!guards) {
+      throw new CustomError({
+        message: "Users not found",
+        statusCode: HTTPStatusCode.NOT_FOUND,
+        internalMessage: InternalErrorMessages.USER_NOT_FOUND,
+      });
+    }
+
+    return guards;
+  } catch (e) {
+    const error = formatError(e);
+    throw error;
+  }
+};
+
 export const userService = {
   createUser,
   createGuard,
   getUser,
   getGuard,
   getGuardBySkills,
+  getAllUsers,
+  getAllGuards,
 };

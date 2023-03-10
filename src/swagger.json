@@ -57,7 +57,7 @@
         }
       }
     },
-    "/users/guard": {
+    "/users/guard ": {
       "post": {
         "tags": ["Users"],
         "summary": "Create user as guard",
@@ -127,6 +127,56 @@
         }
       }
     },
+    "/users/all": {
+      "get": {
+        "tags": ["Users"],
+        "summary": "Get all users",
+        "description": "Get all users",
+        "responses": {
+          "200": {
+            "description": "User",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/User"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "404": {
+            "$ref": "#/components/responses/404"
+          }
+        }
+      }
+    },
+    "/users/all-guard": {
+      "get": {
+        "tags": ["Users"],
+        "summary": "Get all guards",
+        "description": "Get all guards",
+        "responses": {
+          "200": {
+            "description": "User",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Guard"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "404": {
+            "$ref": "#/components/responses/404"
+          }
+        }
+      }
+    },
     "/users/guard/{id}": {
       "get": {
         "tags": ["Users"],
@@ -141,6 +191,63 @@
             "schema": {
               "type": "number",
               "format": "number"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "User",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Guard"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "404": {
+            "$ref": "#/components/responses/404"
+          }
+        }
+      }
+    },
+    "/users/guard": {
+      "get": {
+        "tags": ["Users"],
+        "summary": "Get all guards by skills",
+        "description": "Get all guards",
+        "parameters": [
+          {
+            "name": "isDriver",
+            "in": "query",
+            "description": "isDriver",
+            "required": false,
+            "schema": {
+              "type": "boolean",
+              "format": "boolean"
+            }
+          },
+          {
+            "name": "isGuard",
+            "in": "query",
+            "description": "isGuard",
+            "required": false,
+            "schema": {
+              "type": "boolean",
+              "format": "boolean"
+            }
+          },
+          {
+            "name": "hasGun",
+            "in": "query",
+            "description": "hasGun",
+            "required": false,
+            "schema": {
+              "type": "boolean",
+              "format": "boolean"
             }
           }
         ],
@@ -300,6 +407,118 @@
           }
         }
       }
+    },
+    "/requests/{id}/guard/{guardId}": {
+      "patch": {
+        "tags": ["Requests"],
+        "summary": "Assign guard to request",
+        "description": "Assign guard to request",
+        "operationId": "assignGuardToRequest",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "Request id",
+            "required": true,
+            "schema": {
+              "type": "number",
+              "format": "number"
+            }
+          },
+          {
+            "name": "guardId",
+            "in": "path",
+            "description": "Guard id",
+            "required": true,
+            "schema": {
+              "type": "number",
+              "format": "number"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Request"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "404": {
+            "$ref": "#/components/responses/404"
+          }
+        }
+      }
+    },
+    "/requests/active": {
+      "get": {
+        "tags": ["Requests"],
+        "summary": "Get all active requests",
+        "description": "Get all active requests",
+        "operationId": "getAllActiveRequests",
+        "responses": {
+          "200": {
+            "description": "Requests",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Request"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "404": {
+            "$ref": "#/components/responses/404"
+          }
+        }
+      }
+    },
+    "/requests/{id}/active": {
+      "patch": {
+        "tags": ["Requests"],
+        "summary": "Update request status to active",
+        "description": "Update request status to active",
+        "operationId": "updateRequestStatusToActive",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "Request id",
+            "required": true,
+            "schema": {
+              "type": "number",
+              "format": "number"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Request"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "404": {
+            "$ref": "#/components/responses/404"
+          }
+        }
+      }
     }
   },
   "components": {
@@ -393,9 +612,13 @@
             "type": "string",
             "example": "Jane Doe"
           },
+          "userId": {
+            "type": "number",
+            "example": 1
+          },
           "startingAddress": {
             "type": "string",
-            "example": ""
+            "example": "tuka bratmee"
           },
           "endingAddress": {
             "type": "string",
@@ -415,7 +638,11 @@
           },
           "isActive": {
             "type": "boolean",
-            "example": false
+            "example": true
+          },
+          "startingTime": {
+            "type": "string",
+            "example": "2020-10-10T10:00:00.000Z"
           }
         }
       }
