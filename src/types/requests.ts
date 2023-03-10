@@ -11,6 +11,7 @@ export interface CreateRequestArgs {
   startingTime: string;
   endingTime: string;
   hasVehicle: boolean;
+  rentHours: number | null;
 }
 
 export interface RequestResponse {
