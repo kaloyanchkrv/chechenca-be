@@ -1,7 +1,20 @@
 import prisma from "../lib/prisma";
 import { CustomError, HTTPStatusCode, InternalErrorMessages } from "../types/error";
 import { CreateRequestArgs, RequestResponse, UpdateRequest } from "../types/requests";
-import { formatError } from "../utils/functions";
+import { calcTotalPriceForGuard, formatError } from "../utils/functions";
+import sgMail from "@sendgrid/mail";
+
+const apiKey = process.env.SENDGRID_API_KEY;
+
+if (!apiKey) {
+  throw new CustomError({
+    message: "Missing Third party API key",
+    statusCode: HTTPStatusCode.INTERNAL_SERVER_ERROR,
+    internalMessage: InternalErrorMessages.INTERNAL_ERROR,
+  });
+}
+
+sgMail.setApiKey(apiKey);
 
 const createRequest = async ({
   userId,
@@ -12,9 +25,10 @@ const createRequest = async ({
   startingTime,
   endingTime,
   isGuard,
-  isDriver, 
+  isDriver,
   hasGun,
   hasVehicle,
+  rentHours,
 }: CreateRequestArgs): Promise<RequestResponse> => {
   try {
     const user = await prisma.user.findUnique({
@@ -34,6 +48,12 @@ const createRequest = async ({
       });
     }
 
+    if (rentHours === null) {
+      rentHours = 0;
+    }
+
+    const guardCost = calcTotalPriceForGuard(rentHours);
+
     const request = await prisma.request.create({
       data: {
         userId: user.id,
@@ -48,6 +68,8 @@ const createRequest = async ({
         isDriver: isDriver,
         hasGun: hasGun,
         hasVehicle: hasVehicle,
+        rentHours: rentHours,
+        totalCost: guardCost || 15,
       },
     });
 
@@ -86,6 +108,8 @@ const getRequestById = async (id: number): Promise<RequestResponse> => {
         isDriver: true,
         hasGun: true,
         hasVehicle: true,
+        rentHours: true,
+        totalCost: true,
       },
     });
 
@@ -146,6 +170,8 @@ const getRequestsByUserId = async (userId: number): Promise<RequestResponse[]> =
         isDriver: true,
         hasGun: true,
         hasVehicle: true,
+        rentHours: true,
+        totalCost: true,
       },
     });
 
@@ -182,6 +208,8 @@ const getAllRequests = async (): Promise<RequestResponse[]> => {
         isDriver: true,
         hasGun: true,
         hasVehicle: true,
+        rentHours: true,
+        totalCost: true,
       },
     });
 
@@ -208,6 +236,7 @@ const updateRequestToTaken = async (id: number, guardId: number): Promise<Reques
       },
       select: {
         id: true,
+        userId: true,
       },
     });
 
@@ -229,6 +258,49 @@ const updateRequestToTaken = async (id: number, guardId: number): Promise<Reques
         guardId: guardId,
       },
     });
+
+    const guard = await prisma.user.findFirst({
+      where: {
+        id: guardId,
+      },
+      select: {
+        name: true,
+      },
+    });
+
+    if (!guard) {
+      throw new CustomError({
+        message: "Guard not found",
+        statusCode: HTTPStatusCode.NOT_FOUND,
+        internalMessage: InternalErrorMessages.USERS_NOT_FOUND,
+      });
+    }
+
+    const user = await prisma.user.findUnique({
+      where: {
+        id: request.userId,
+      },
+      select: {
+        email: true,
+      },
+    });
+
+    if (!user) {
+      throw new CustomError({
+        message: "User not found",
+        statusCode: HTTPStatusCode.NOT_FOUND,
+        internalMessage: InternalErrorMessages.USER_NOT_FOUND,
+      });
+    }
+
+    const msg = {
+      to: user.email,
+      from: "kchakarov@appolica.com",
+      subject: "Request Status",
+      text: "Your request has been taken by " + guard.name,
+    };
+
+    sgMail.send(msg);
 
     return updatedRequest;
   } catch (e) {
@@ -290,6 +362,9 @@ const getAllRequestsForGuard = async (guardId: number): Promise<RequestResponse[
         endingAddress: true,
         isActive: true,
         startingTime: true,
+        endingTime: true,
+        totalCost: true,
+        rentHours: true,
       },
     });
 
@@ -324,6 +399,8 @@ const getActiveRequests = async (): Promise<RequestResponse[]> => {
         endingAddress: true,
         isActive: true,
         startingTime: true,
+        totalCost: true,
+        rentHours: true,
       },
     });
 

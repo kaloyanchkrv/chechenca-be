@@ -54,4 +54,6 @@ model Request {
   isDriver        Boolean  @default(false) @map("is_driver")
   hasGun          Boolean  @default(false) @map("has_gun")
   hasVehicle      Boolean  @default(false) @map("has_car")
+  rentHours       Float?   @default(0.0) @map("rent_hours") @db.DoublePrecision
+  totalCost       Float    @default(0.0) @map("total_cost") @db.DoublePrecision
 }

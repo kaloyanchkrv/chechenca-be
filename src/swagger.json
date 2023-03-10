@@ -7,7 +7,7 @@
   },
   "servers": [
     {
-      "url": " https://bbb5-194-141-252-114.eu.ngrok.io",
+      "url": "https://9f34-78-83-77-155.eu.ngrok.io",
       "description": "BodyGuard API"
     }
   ],
@@ -643,6 +643,14 @@
           "startingTime": {
             "type": "string",
             "example": "2020-10-10T10:00:00.000Z"
+          },
+          "endingTime": {
+            "type": "string",
+            "example": "2020-10-10T10:00:00.000Z"
+          },
+          "rentHours": {
+            "type": "number",
+            "example": 1
           }
         }
       }

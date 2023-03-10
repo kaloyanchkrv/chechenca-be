@@ -21,6 +21,7 @@ const createRequest = async (
       startingTime: string;
       endingTime: string;
       hasVehicle: boolean;
+      rentHours: number | null;
     }
   >,
   res: Response<RequestResponse | CustomError>
@@ -39,6 +40,7 @@ const createRequest = async (
       startingTime,
       endingTime,
       hasVehicle,
+      rentHours,
     } = req.body;
 
     if (!description || !startingAddress || !description.trim().length || !startingAddress.trim().length) {
@@ -62,6 +64,7 @@ const createRequest = async (
       startingTime,
       endingTime,
       hasVehicle,
+      rentHours,
     });
 
     return res.status(HTTPStatusCode.CREATED).json(request);
