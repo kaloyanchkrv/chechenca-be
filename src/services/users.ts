@@ -1,4 +1,4 @@
-import { CreateGuardParams, CreateUserParams, GuardResponse, UserResponse } from "../types/users";
+import { CreateGuardParams, CreateUserParams, GetGuardSkillsParams, GuardResponse, UserResponse } from "../types/users";
 import prisma from "../lib/prisma";
 import { CustomError, HTTPStatusCode, InternalErrorMessages } from "../types/error";
 import { formatError } from "../utils/functions";
@@ -28,14 +28,23 @@ const createUser = async ({ name, email, phone }: CreateUserParams): Promise<Use
   }
 };
 
-const createGuard = async ({ name, email, phone, skills }: CreateGuardParams): Promise<UserResponse> => {
+const createGuard = async ({
+  name,
+  email,
+  phone,
+  isGuard,
+  isDriver,
+  hasGun,
+}: CreateGuardParams): Promise<UserResponse> => {
   try {
     const guard = await prisma.guard.create({
       data: {
         name,
         email,
         phoneNumber: phone,
-        skills: skills,
+        isDriver: isDriver,
+        isGuard: isGuard,
+        hasGun: hasGun,
       },
     });
 
@@ -94,7 +103,9 @@ const getGuard = async (id: number): Promise<UserResponse> => {
         name: true,
         email: true,
         phoneNumber: true,
-        skills: true,
+        isDriver: true,
+        isGuard: true,
+        hasGun: true,
       },
     });
 
@@ -113,47 +124,47 @@ const getGuard = async (id: number): Promise<UserResponse> => {
   }
 };
 
-// const getGuardBySkills = async (skills: string[]): Promise<GuardResponse[]> => {
-//   try {
-//     console.log("hui");
-//     const guard = await prisma.guard.findMany({
-//       where: {
-//         skills: {
-//           hasEvery: skills,
-//         },
-//       },
-//       select: {
-//         id: true,
-//         name: true,
-//         email: true,
-//         phoneNumber: true,
-//         skills: true,
-//       },
-//     });
-//     console.log("hui");
+const getGuardBySkills = async (isDriver: boolean): Promise<GuardResponse[]> => {
+  try {
+    console.log("hui");
+    const guard = await prisma.guard.findMany({
+      where: {
+        isDriver: isDriver,
+      },
+      select: {
+        id: true,
+        name: true,
+        email: true,
+        phoneNumber: true,
+        isDriver: true,
+        isGuard: true,
+        hasGun: true,
+      },
+    });
+    console.log("hui");
 
-//     if (!guard) {
-//       throw new CustomError({
-//         message: "User not found",
-//         statusCode: HTTPStatusCode.NOT_FOUND,
-//         internalMessage: InternalErrorMessages.USER_NOT_FOUND,
-//       });
-//     }
+    if (!guard) {
+      throw new CustomError({
+        message: "User not found",
+        statusCode: HTTPStatusCode.NOT_FOUND,
+        internalMessage: InternalErrorMessages.USER_NOT_FOUND,
+      });
+    }
 
-//     return guard;
-//   } catch (e) {
-//     const error = formatError(e);
+    return guard;
+  } catch (e) {
+    const error = formatError(e);
 
-//     console.log(error);
+    console.log(error);
 
-//     throw error;
-//   }
-// };
+    throw error;
+  }
+};
 
 export const userService = {
   createUser,
   createGuard,
   getUser,
   getGuard,
-  //getGuardBySkills,
+  getGuardBySkills,
 };

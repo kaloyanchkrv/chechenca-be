@@ -7,6 +7,7 @@ export enum InternalErrorMessages {
   USER_NOT_DELETED = "User not deleted",
   INTERNAL_ERROR = "INTERNAL_ERROR",
   REQUEST_NOT_CREATED = "REQUEST_NOT_CREATED",
+  REQUEST_NOT_FOUND = "REQUEST_NOT_FOUND",
 }
 
 export enum HTTPStatusCode {

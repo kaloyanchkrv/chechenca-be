@@ -1,16 +1,23 @@
 export interface CreateRequestArgs {
   userId: number;
-  skills: string[];
-  status: string;
+  isActive: boolean;
   description: string;
   startingAddress: string;
+  endingAddress: string | null;
+  isGuard: boolean;
+  isDriver: boolean;
+  hasGun: boolean;
+  isTaken: boolean;
 }
 
 export interface RequestResponse {
   id: number;
-  userId: number;
-  skills: string[];
-  status: string;
+  isActive: boolean;
   description: string;
   startingAddress: string;
+  endingAddress: string | null;
+  isGuard: boolean;
+  isDriver: boolean;
+  hasGun: boolean;
+  isTaken: boolean;
 }

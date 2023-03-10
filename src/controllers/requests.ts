@@ -8,21 +8,29 @@ const createRequest = async (
   req: Request<
     unknown,
     unknown,
-    { userId: number; description: string; skills: string[]; startingAddress: string; status: string }
+    {
+      userId: number;
+      description: string;
+      isGuard: boolean;
+      isDriver: boolean;
+      hasGun: boolean;
+      isTaken: boolean;
+      startingAddress: string;
+      isActive: boolean;
+      endingAddress: string | null;
+    }
   >,
   res: Response<RequestResponse | CustomError>
 ) => {
   try {
-    const { userId, description, skills, startingAddress, status } = req.body;
+    const { userId, description, startingAddress, isActive, endingAddress, isDriver, isGuard, hasGun, isTaken } =
+      req.body;
 
     if (
-      !userId ||
       !description ||
-      !skills ||
       !startingAddress ||
       !status ||
       !description.trim().length ||
-      !skills.length ||
       !startingAddress.trim().length ||
       !status.trim().length
     ) {
@@ -36,9 +44,13 @@ const createRequest = async (
     const request = await requestService.createRequest({
       userId,
       description,
-      skills,
       startingAddress,
-      status,
+      isActive,
+      endingAddress,
+      isDriver,
+      isGuard,
+      hasGun,
+      isTaken,
     });
 
     return res.status(HTTPStatusCode.CREATED).json(request);
@@ -48,6 +60,44 @@ const createRequest = async (
   }
 };
 
+const getRequestById = async (req: Request<{ id: number }>, res: Response<RequestResponse | CustomError>) => {
+  try {
+    const { id } = req.params;
+    const request = await requestService.getRequestById(Number(id));
+    return res.status(HTTPStatusCode.OK).json(request);
+  } catch (e) {
+    const error = formatError(e);
+    throw error;
+  }
+};
+
+const getRequestsByUserId = async (
+  req: Request<{ userId: number }>,
+  res: Response<RequestResponse[] | CustomError>
+) => {
+  try {
+    const { userId } = req.params;
+    const request = await requestService.getRequestsByUserId(Number(userId));
+    return res.status(HTTPStatusCode.OK).json(request);
+  } catch (e) {
+    const error = formatError(e);
+    throw error;
+  }
+};
+
+const getAllRequests = async (req: Request, res: Response<unknown | CustomError>) => {
+  try {
+    const request = await requestService.getAllRequests();
+    return res.status(HTTPStatusCode.OK).json(request);
+  } catch (e) {
+    const error = formatError(e);
+    throw error;
+  }
+};
+
 export const requestController = {
   createRequest,
+  getRequestById,
+  getRequestsByUserId,
+  getAllRequests,
 };
