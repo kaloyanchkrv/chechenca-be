@@ -9,7 +9,6 @@ export interface CreateRequestArgs {
   hasGun: boolean;
   isTaken: boolean;
   startingTime: string;
-  endingTime: string;
   hasVehicle: boolean;
   rentHours: number | null;
 }
