@@ -49,7 +49,6 @@ model Request {
   startingAddress String   @map("starting_address") @db.VarChar(256)
   endingAddress   String?  @map("ending_address") @db.VarChar(256)
   startingTime    String   @default("") @map("starting_time")
-  endingTime      String?  @default("") @map("ending_time")
   isGuard         Boolean  @default(false) @map("is_guard")
   isDriver        Boolean  @default(false) @map("is_driver")
   hasGun          Boolean  @default(false) @map("has_gun")

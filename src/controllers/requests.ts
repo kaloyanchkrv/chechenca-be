@@ -19,7 +19,6 @@ const createRequest = async (
       isActive: boolean;
       endingAddress: string | null;
       startingTime: string;
-      endingTime: string;
       hasVehicle: boolean;
       rentHours: number | null;
     }
@@ -38,7 +37,6 @@ const createRequest = async (
       hasGun,
       isTaken,
       startingTime,
-      endingTime,
       hasVehicle,
       rentHours,
     } = req.body;
@@ -62,7 +60,6 @@ const createRequest = async (
       hasGun,
       isTaken,
       startingTime,
-      endingTime,
       hasVehicle,
       rentHours,
     });
